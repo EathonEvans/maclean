@@ -1,237 +1,525 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Maclean — 极简 macOS 菜单栏工具</title>
-<meta name="description" content="Maclean：一键显示器休眠 · 清洁模式。极简 macOS 菜单栏工具，MIT 开源免费。">
+<meta name="theme-color" content="#f8f8f6">
+<title>Maclean — 让 Mac 使用更从容</title>
+<meta name="description" content="Maclean，一款专注于息屏与清洁模式的 macOS 小工具。简单、轻巧、恰到好处。">
 <style>
-  :root {
-    --bg: #0B0E17;
-    --card: #141826;
-    --card-border: rgba(255,255,255,0.08);
-    --text: #E8ECF4;
-    --text-dim: #8B95A7;
-    --blue-1: #9AD8FF;
-    --blue-2: #438DFF;
-    --blue-3: #1552E8;
-    --accent: #438DFF;
-  }
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  .wrap { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+:root {
+  --bg: #f8f8f6;
+  --paper: #fff;
+  --ink: #191b20;
+  --muted: #777b83;
+  --line: #e9e9e6;
+  --blue: #3979ee;
+  --blue-soft: #eaf1ff;
+  --radius: 22px;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "PingFang SC", "Microsoft YaHei", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font: inherit; }
+.container { width: min(1120px, calc(100% - 48px)); margin: auto; }
 
-  /* 顶部导航 */
-  nav { display: flex; align-items: center; gap: 14px; padding: 28px 0; }
-  nav img { width: 28px; height: 28px; border-radius: 7px; }
-  nav .name { font-weight: 700; font-size: 17px; letter-spacing: 0.2px; }
-  nav .links { margin-left: auto; display: flex; gap: 22px; }
-  nav a { color: var(--text-dim); text-decoration: none; font-size: 14px; }
-  nav a:hover { color: var(--text); }
+/* Navigation */
+.nav {
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(20,25,35,.06);
+}
+.brand { display: flex; align-items: center; gap: 11px; font-size: 21px; font-weight: 650; letter-spacing: -.8px; }
+.logo {
+  width: 34px; height: 34px; border-radius: 10px;
+  background: #15171c; display: grid; place-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,.12);
+}
+.logo svg { width: 25px; height: 25px; }
+.brand-star { color: var(--blue); font-size: 12px; vertical-align: 5px; margin-left: 2px; }
+.nav-links { display: flex; align-items: center; gap: 34px; color: #666a72; font-size: 13px; }
+.nav-links a:hover { color: var(--ink); }
+.nav-cta {
+  border: 1px solid #dedfdf; border-radius: 30px;
+  padding: 10px 19px; font-size: 13px; font-weight: 550;
+  transition: .2s;
+}
+.nav-cta:hover { background: var(--ink); color: white; border-color: var(--ink); }
 
-  /* Hero */
-  .hero { text-align: center; padding: 72px 0 64px; }
-  .hero img { width: 128px; height: 128px; border-radius: 28px; box-shadow: 0 24px 64px rgba(67,141,255,0.25); }
-  .hero h1 {
-    font-size: 52px; font-weight: 800; letter-spacing: -1px; margin: 28px 0 12px;
-    background: linear-gradient(120deg, var(--blue-1), var(--blue-2) 55%, var(--blue-3));
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  .hero p.tagline { font-size: 19px; color: var(--text-dim); }
-  .hero .cta { margin-top: 32px; display: flex; gap: 14px; justify-content: center; }
-  .btn {
-    display: inline-block; padding: 11px 26px; border-radius: 12px;
-    font-size: 15px; font-weight: 600; text-decoration: none; transition: transform .15s, box-shadow .15s;
-  }
-  .btn:hover { transform: translateY(-2px); }
-  .btn-primary {
-    color: #fff;
-    background: linear-gradient(120deg, var(--blue-2), var(--blue-3));
-    box-shadow: 0 8px 24px rgba(67,141,255,0.35);
-  }
-  .btn-ghost { color: var(--text); border: 1px solid var(--card-border); background: var(--card); }
+/* Hero */
+.hero { padding: 108px 0 76px; text-align: center; }
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  color: #626a78; font-size: 12px; letter-spacing: 1.2px;
+  text-transform: uppercase; font-weight: 600;
+}
+.eyebrow-dot { width: 6px; height: 6px; background: var(--blue); border-radius: 50%; }
+.hero h1 {
+  font-size: clamp(48px, 7.2vw, 82px);
+  line-height: 1.12; letter-spacing: -5px;
+  font-weight: 650; margin: 25px 0 20px;
+}
+.hero h1 span { color: var(--blue); }
+.hero-desc {
+  font-size: 17px; line-height: 1.9; color: var(--muted);
+  max-width: 530px; margin: 0 auto;
+}
+.hero-actions { margin-top: 34px; display: flex; gap: 12px; justify-content: center; }
+.primary-btn, .secondary-btn {
+  padding: 13px 23px; border-radius: 30px; font-size: 13px;
+  font-weight: 600; cursor: pointer; transition: .2s;
+}
+.primary-btn { color: white; background: var(--ink); border: 1px solid var(--ink); }
+.primary-btn:hover { background: #333943; transform: translateY(-2px); }
+.secondary-btn { border: 1px solid #dedfdf; background: transparent; }
+.secondary-btn:hover { background: white; }
 
-  /* 特性卡片 */
-  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding: 40px 0 8px; }
-  .card {
-    background: var(--card); border: 1px solid var(--card-border);
-    border-radius: 18px; padding: 26px 22px;
-  }
-  .card .ic {
-    width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-    background: rgba(67,141,255,0.14); margin-bottom: 16px; font-size: 20px;
-  }
-  .card h3 { font-size: 16px; margin-bottom: 8px; }
-  .card p { font-size: 13.5px; color: var(--text-dim); }
+/* Product stage */
+.stage-wrap { padding: 0 0 115px; }
+.stage {
+  max-width: 1000px; margin: auto; position: relative;
+  border: 1px solid #e5e5e2; border-radius: 24px;
+  padding: 12px; background: #efefed;
+  box-shadow: 0 30px 90px rgba(27,35,50,.09);
+}
+.desktop {
+  overflow: hidden; border-radius: 15px; background: #fff;
+  min-height: 450px; position: relative;
+}
+.desktop-top {
+  height: 42px; background: rgba(249,249,248,.94);
+  border-bottom: 1px solid #ededeb; display: flex;
+  align-items: center; justify-content: space-between; padding: 0 15px;
+}
+.traffic { display: flex; gap: 6px; }
+.traffic i { width: 8px; height: 8px; border-radius: 50%; background: #d6d6d4; }
+.desktop-title { color: #92959a; font-size: 10px; }
+.menu-bar {
+  display: flex; align-items: center; gap: 13px; font-size: 10px; color: #5e626a;
+}
+.menu-icon {
+  width: 18px; height: 18px; border-radius: 5px;
+  background: #17191f; display: grid; place-items: center;
+}
+.menu-icon svg { width: 14px; height: 14px; }
+.desktop-content {
+  min-height: 408px; display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; padding: 38px 8%;
+  background:
+    radial-gradient(ellipse at 75% 50%, rgba(223,232,250,.55), transparent 42%),
+    #fff;
+}
+.desktop-copy { padding-right: 20px; }
+.mini-label { color: var(--blue); font-size: 10px; font-weight: 700; letter-spacing: 1.4px; }
+.desktop-copy h3 { font-size: 32px; line-height: 1.35; letter-spacing: -1.4px; margin: 14px 0 10px; }
+.desktop-copy p { color: #858991; font-size: 12px; line-height: 1.9; max-width: 290px; }
+.menu-demo {
+  width: 275px; margin-left: auto; background: rgba(255,255,255,.94);
+  border: 1px solid rgba(0,0,0,.08); border-radius: 13px;
+  box-shadow: 0 18px 55px rgba(32,46,75,.13); padding: 15px;
+}
+.demo-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 13px; border-bottom: 1px solid #eee; }
+.demo-brand { font-size: 13px; font-weight: 650; }
+.demo-status { color: #92969e; font-size: 9px; }
+.demo-section { font-size: 9px; color: #a0a3aa; margin: 15px 0 7px; letter-spacing: .5px; }
+.demo-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 9px; border-radius: 8px;
+}
+.demo-item.active { background: #f0f5ff; }
+.demo-icon {
+  width: 29px; height: 29px; display: grid; place-items: center;
+  background: #f0f1f3; border-radius: 8px; color: #4c5565; font-size: 14px;
+}
+.demo-item.active .demo-icon { background: #dce8ff; color: var(--blue); }
+.demo-info { flex: 1; }
+.demo-info strong { display: block; font-size: 10px; font-weight: 600; }
+.demo-info small { display: block; color: #a0a3aa; font-size: 8px; margin-top: 4px; }
+.demo-arrow { color: #a5a8ae; font-size: 12px; }
+.demo-footer { margin-top: 13px; padding-top: 10px; border-top: 1px solid #eee; color: #a2a5ab; font-size: 8px; display: flex; justify-content: space-between; }
 
-  /* 演示区：CSS 复刻菜单面板与 HUD */
-  .demo { display: flex; gap: 40px; justify-content: center; align-items: flex-start; padding: 64px 0 24px; flex-wrap: wrap; }
-  .demo-panel {
-    background: var(--card); border: 1px solid var(--card-border); border-radius: 14px;
-    padding: 10px; width: 252px; box-shadow: 0 20px 48px rgba(0,0,0,0.45);
-  }
-  .demo-panel .head { display: flex; align-items: center; gap: 8px; padding: 8px 10px; }
-  .demo-panel .head .m { color: var(--accent); font-weight: 700; font-size: 15px; }
-  .demo-row {
-    display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 8px; font-size: 13px;
-  }
-  .demo-row.hi { background: rgba(255,255,255,0.08); }
-  .demo-row .chip {
-    width: 26px; height: 26px; border-radius: 7px; display: flex; align-items: center; justify-content: center;
-    background: rgba(67,141,255,0.14); color: var(--accent); font-size: 13px;
-  }
-  .demo-row .chip.gray { background: rgba(255,255,255,0.1); color: var(--text-dim); }
-  .demo-row .chip.red { background: rgba(255,69,58,0.14); color: #FF6B5E; }
-  .demo-sep { height: 1px; background: var(--card-border); margin: 5px 10px; }
+/* Intro */
+.intro { padding: 80px 0 100px; border-top: 1px solid var(--line); }
+.section-top { display: flex; justify-content: space-between; align-items: end; gap: 30px; margin-bottom: 45px; }
+.section-kicker { font-size: 11px; color: var(--blue); font-weight: 700; letter-spacing: 1.4px; }
+.section-title { font-size: 38px; letter-spacing: -1.8px; margin: 13px 0 0; font-weight: 620; }
+.section-note { max-width: 330px; color: var(--muted); font-size: 13px; line-height: 1.9; }
+.features { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.feature {
+  border: 1px solid #e7e7e4; border-radius: var(--radius);
+  background: white; padding: 30px; min-height: 330px;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.feature-head { display: flex; justify-content: space-between; align-items: center; }
+.feature-number { font-size: 11px; color: #a4a6ab; letter-spacing: 1px; }
+.feature-symbol {
+  width: 39px; height: 39px; border-radius: 12px;
+  display: grid; place-items: center; background: var(--blue-soft); color: var(--blue);
+}
+.feature h3 { font-size: 25px; margin: 25px 0 9px; letter-spacing: -.8px; }
+.feature p { color: var(--muted); font-size: 13px; line-height: 1.9; margin: 0; max-width: 360px; }
+.feature-visual { flex: 1; min-height: 110px; display: flex; align-items: end; justify-content: center; padding-top: 25px; }
+.sleep-visual {
+  height: 90px; width: 75%; border-radius: 10px 10px 3px 3px;
+  background: linear-gradient(135deg,#252a34,#101319);
+  position: relative; box-shadow: 0 12px 24px rgba(0,0,0,.12);
+}
+.sleep-visual:after {
+  content: ""; position: absolute; bottom: -5px; left: -5%;
+  width: 110%; height: 5px; background: #c9cbd0; border-radius: 0 0 5px 5px;
+}
+.sleep-glow { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); width: 5px; height: 5px; border-radius: 50%; background: #7faaff; box-shadow: 0 0 25px 8px rgba(70,130,240,.4); }
+.clean-visual {
+  width: 75%; height: 118px; background: #101114; border-radius: 10px;
+  position: relative; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 9px;
+}
+.clean-ring {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: conic-gradient(#7faaff 0 62%, rgba(255,255,255,.14) 62% 100%);
+  display: grid; place-items: center; position: relative;
+}
+.clean-ring:before {
+  content: ""; position: absolute; inset: 5px; border-radius: 50%; background: #17191f;
+}
+.clean-ring span { position: relative; font-size: 15px; color: #fff; }
+.clean-caption { color: rgba(255,255,255,.72); font-size: 9.5px; }
+.clean-lock { color: rgba(255,255,255,.35); font-size: 8px; margin-top: -4px; }
 
-  .demo-hud {
-    background: rgba(255,255,255,0.03); border: 1px solid var(--card-border); border-radius: 20px;
-    padding: 26px 60px; text-align: center; margin-top: 10px;
-  }
-  .ring {
-    width: 92px; height: 92px; border-radius: 50%; margin: 0 auto 14px; position: relative;
-    background: conic-gradient(var(--accent) 0 62%, rgba(255,255,255,0.14) 62% 100%);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .ring::before {
-    content: ""; position: absolute; inset: 7px; border-radius: 50%;
-    background: #171B28; border: 1px solid rgba(255,255,255,0.12);
-  }
-  .ring .cursor { position: relative; font-size: 26px; color: #fff; }
-  .demo-hud .t { font-size: 14px; color: #fff; opacity: 0.92; }
-  .demo-hud .lock { font-size: 11px; color: rgba(255,255,255,0.45); margin-top: 8px; }
+/* Philosophy */
+.philosophy { padding: 95px 0; background: #f0f2f5; }
+.philosophy-inner { display: grid; grid-template-columns: .9fr 1.1fr; gap: 80px; align-items: center; }
+.philosophy h2 { font-size: 42px; line-height: 1.35; letter-spacing: -2px; margin: 14px 0; }
+.philosophy h2 span { color: var(--blue); }
+.philosophy p { color: #777d87; font-size: 14px; line-height: 2; max-width: 390px; }
+.principles { border-top: 1px solid #dfe2e7; }
+.principle { display: flex; justify-content: space-between; padding: 20px 0; border-bottom: 1px solid #dfe2e7; gap: 20px; }
+.principle strong { font-size: 14px; font-weight: 600; }
+.principle span { color: #858b95; font-size: 12px; text-align: right; }
 
-  /* 捐赠 */
-  .donate { text-align: center; padding: 64px 0; }
-  .donate h2 { font-size: 26px; margin-bottom: 10px; }
-  .donate p.sub { color: var(--text-dim); margin-bottom: 30px; }
-  .qr { display: flex; gap: 26px; justify-content: center; flex-wrap: wrap; }
-  .qr .item {
-    background: var(--card); border: 1px solid var(--card-border); border-radius: 18px; padding: 18px;
-  }
-  .qr img { width: 220px; height: auto; border-radius: 12px; display: block; }
-  .qr .label { margin-top: 10px; font-size: 13px; color: var(--text-dim); }
+/* Price */
+.price-section { padding: 105px 0; text-align: center; }
+.price-section h2 { font-size: 38px; letter-spacing: -1.8px; margin: 13px 0; }
+.price-section > .container > p { color: var(--muted); font-size: 14px; }
+.price-card {
+  max-width: 430px; margin: 40px auto 0; background: white;
+  border: 1px solid #e7e7e4; border-radius: 20px; padding: 33px;
+  text-align: left;
+}
+.price-label { color: #888d96; font-size: 12px; }
+.price { font-size: 54px; font-weight: 650; letter-spacing: -3px; margin: 12px 0 3px; }
+.price small { font-size: 14px; letter-spacing: 0; color: #8b9098; font-weight: 450; }
+.price-sub { color: #92969e; font-size: 11px; }
+.price-divider { height: 1px; background: #eee; margin: 25px 0; }
+.price-list { list-style: none; padding: 0; margin: 0 0 25px; }
+.price-list li { font-size: 12px; margin: 14px 0; color: #545963; display: flex; gap: 10px; }
+.check { color: var(--blue); font-weight: 700; }
+.price-card button { width: 100%; border: 0; background: var(--ink); color: white; padding: 14px; border-radius: 30px; cursor: pointer; font-size: 13px; }
+.price-card button:hover { background: #333943; }
+.price-foot { text-align: center; color: #a0a3aa; font-size: 10px; margin-top: 15px; }
 
-  /* 构建与页脚 */
-  .build { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 24px 26px; margin: 30px 0 0; }
-  .build h3 { font-size: 15px; margin-bottom: 12px; }
-  pre {
-    background: #0B0E17; border-radius: 10px; padding: 16px 18px; overflow-x: auto;
-    font-family: "SF Mono", Menlo, monospace; font-size: 13px; color: #A9C7FF; line-height: 1.8;
-  }
-  footer { text-align: center; color: var(--text-dim); font-size: 13px; padding: 48px 0 40px; }
-  footer a { color: var(--accent); text-decoration: none; }
+/* Download & Donate */
+.dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; max-width: 900px; margin: 40px auto 0; }
+.dl-card {
+  background: white; border: 1px solid #e7e7e4; border-radius: 20px;
+  padding: 30px; text-align: left;
+}
+.dl-btn {
+  display: block; text-align: center; background: var(--ink); color: white;
+  padding: 13px; border-radius: 30px; font-size: 13px; font-weight: 600; text-decoration: none;
+  transition: .2s;
+}
+.dl-btn:hover { background: #333943; transform: translateY(-1px); }
+.qr-row { display: flex; gap: 16px; }
+.qr-item { margin: 0; text-align: center; }
+.qr-item img {
+  width: 150px; height: auto; border-radius: 12px;
+  border: 1px solid #eceae6; display: block;
+}
+.qr-item figcaption { margin-top: 8px; color: #a0a3aa; font-size: 11px; }
+@media(max-width:700px) {
+  .dl-grid { grid-template-columns: 1fr; }
+}
 
-  @media (max-width: 720px) {
-    .features { grid-template-columns: 1fr; }
-    .hero h1 { font-size: 38px; }
-  }
+/* Footer */
+footer { border-top: 1px solid var(--line); padding: 27px 0; }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.footer-brand { display: flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 650; }
+.footer-brand .logo { width: 27px; height: 27px; border-radius: 8px; }
+.footer-brand .logo svg { width: 20px; height: 20px; }
+.copyright { color: #a0a3aa; font-size: 10px; }
+.footer-note { color: #888d96; font-size: 11px; }
+
+@media(max-width:700px) {
+  .container { width: min(100% - 36px, 540px); }
+  .nav { height: 65px; }
+  .nav-links { gap: 15px; }
+  .nav-links a:not(.nav-cta) { display: none; }
+  .hero { padding: 82px 0 58px; }
+  .hero h1 { letter-spacing: -3px; }
+  .hero-desc { font-size: 14px; }
+  .stage-wrap { padding-bottom: 70px; }
+  .desktop { min-height: 430px; }
+  .desktop-content { grid-template-columns: 1fr; padding: 30px 20px; gap: 22px; }
+  .desktop-copy { text-align: center; padding: 0; }
+  .desktop-copy h3 { font-size: 25px; }
+  .desktop-copy p { margin: auto; }
+  .menu-demo { margin: auto; width: min(100%,275px); }
+  .section-top { display: block; }
+  .section-note { margin-top: 18px; }
+  .section-title { font-size: 31px; }
+  .features { grid-template-columns: 1fr; }
+  .feature { min-height: 320px; }
+  .philosophy-inner { grid-template-columns: 1fr; gap: 35px; }
+  .philosophy h2 { font-size: 34px; }
+  .price-section h2 { font-size: 32px; }
+  .footer-inner { flex-wrap: wrap; }
+}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <nav>
-    <img src="assets/icon-256.png" alt="maclean">
-    <span class="name">Maclean</span>
-    <div class="links">
+<header class="container">
+  <nav class="nav">
+    <a class="brand" href="#">
+      <span class="logo">
+        <svg viewBox="395 150 425 345" fill="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="navL1" x1="430" y1="360" x2="550" y2="500" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#fff"/><stop offset="1" stop-color="#C7D8F4"/>
+            </linearGradient>
+            <linearGradient id="navL2" x1="535" y1="350" x2="660" y2="510" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#9AD8FF"/><stop offset="1" stop-color="#438DFF"/>
+            </linearGradient>
+            <linearGradient id="navL3" x1="650" y1="355" x2="770" y2="510" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#347FFF"/><stop offset="1" stop-color="#1552E8"/>
+            </linearGradient>
+            <linearGradient id="navL4" x1="735" y1="285" x2="760" y2="330" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#55B8FF"/><stop offset="1" stop-color="#1B5EF4"/>
+            </linearGradient>
+          </defs>
+          <path d="M450 440L555 285" stroke="url(#navL1)" stroke-width="82" stroke-linecap="round"/>
+          <path d="M555 285L660 440" stroke="url(#navL2)" stroke-width="82" stroke-linecap="round"/>
+          <path d="M660 440L765 285" stroke="url(#navL3)" stroke-width="82" stroke-linecap="round"/>
+          <path d="M760 166C763 180 769 186 783 189C769 192 763 198 760 212C757 198 751 192 737 189C751 186 757 180 760 166Z" fill="url(#navL4)"/>
+        </svg>
+      </span>
+      <span>Maclean<span class="brand-star">✦</span></span>
+    </a>
+    <div class="nav-links">
       <a href="#features">功能</a>
-      <a href="#demo">预览</a>
-      <a href="#donate">支持</a>
-      <a href="https://github.com/EathonEvans/maclean">GitHub</a>
+      <a href="#philosophy">理念</a>
+      <a href="#download">下载</a>
+      <a href="https://github.com/EathonEvans/maclean" target="_blank">GitHub</a>
+      <a class="nav-cta" href="#download">免费下载</a>
     </div>
   </nav>
+</header>
 
-  <div class="hero">
-    <img src="assets/icon.png" alt="Maclean 应用图标">
-    <h1>Maclean</h1>
-    <p class="tagline">一键显示器休眠 · 清洁模式<br>极简 macOS 菜单栏工具，MIT 开源免费</p>
-    <div class="cta">
-      <a class="btn btn-primary" href="https://github.com/EathonEvans/maclean/releases">下载</a>
-      <a class="btn btn-ghost" href="https://github.com/EathonEvans/maclean">GitHub</a>
+<main>
+  <section class="hero container">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> A LITTLE TOOL FOR YOUR MAC</div>
+    <h1>让 Mac 使用<br><span>更从容。</span></h1>
+    <p class="hero-desc">
+      有些事情，不需要复杂。<br>
+      休眠，清洁。两个简单的功能，让日常使用多一点自在。<br>
+      免费开源，MIT 协议。
+    </p>
+    <div class="hero-actions">
+      <a href="#download" class="primary-btn">免费下载 Maclean</a>
+      <a href="#features" class="secondary-btn">了解更多</a>
     </div>
-  </div>
+  </section>
 
-  <div class="features" id="features">
-    <div class="card">
-      <div class="ic">🖥️</div>
-      <h3>显示器休眠</h3>
-      <p>一键只关闭显示器：不锁屏、不整机睡眠、不要求重新认证、不改系统设置。唤醒即恢复。</p>
-    </div>
-    <div class="card">
-      <div class="ic">✨</div>
-      <h3>清洁模式</h3>
-      <p>全屏纯黑 + 屏蔽全部键盘输入，安心擦屏幕、擦键盘。悬停屏幕中央提示框 1.5 秒退出。</p>
-    </div>
-    <div class="card">
-      <div class="ic">🔒</div>
-      <h3>隐私优先</h3>
-      <p>不记录键盘内容、不保存鼠标轨迹、无网络、无账号、无云端。日志只记状态与错误码。</p>
-    </div>
-  </div>
-
-  <div class="demo" id="demo">
-    <div>
-      <div class="demo-panel">
-        <div class="head"><span class="m">〜 Maclean</span></div>
-        <div class="demo-row"><span class="chip">🖥️</span> 显示器休眠</div>
-        <div class="demo-row hi"><span class="chip">✨</span> 清洁模式</div>
-        <div class="demo-sep"></div>
-        <div class="demo-row"><span class="chip gray">⚙️</span> 设置...</div>
-        <div class="demo-row"><span class="chip gray">ℹ️</span> 关于 maclean</div>
-        <div class="demo-sep"></div>
-        <div class="demo-row"><span class="chip red">⏻</span> 退出 maclean</div>
-      </div>
-      <p style="text-align:center;color:var(--text-dim);font-size:12px;margin-top:10px;">菜单面板</p>
-    </div>
-    <div>
-      <div class="demo-hud">
-        <div class="ring"><span class="cursor">🖱️</span></div>
-        <div class="t">悬停 1.5 秒即可退出</div>
-        <div class="lock">🔒 已禁用键盘</div>
-      </div>
-      <p style="text-align:center;color:var(--text-dim);font-size:12px;margin-top:10px;">清洁模式 HUD（悬停它退出）</p>
-    </div>
-  </div>
-
-  <div class="donate" id="donate">
-    <h2>支持开发者 ☕</h2>
-    <p class="sub">Maclean 完全免费开源。如果它帮你省了时间，欢迎请作者喝杯咖啡。</p>
-    <div class="qr">
-      <div class="item">
-        <img src="assets/donate-wechat.png" alt="微信收款码">
-        <div class="label">微信</div>
-      </div>
-      <div class="item">
-        <img src="assets/donate-alipay.png" alt="支付宝收款码">
-        <div class="label">支付宝</div>
+  <section class="stage-wrap container">
+    <div class="stage">
+      <div class="desktop">
+        <div class="desktop-top">
+          <div class="traffic"><i></i><i></i><i></i></div>
+          <div class="desktop-title">Maclean · A little tool for your Mac</div>
+          <div class="menu-bar">
+            <span>文件</span><span>编辑</span><span>显示</span>
+            <span class="menu-icon">
+              <svg viewBox="395 150 425 345" fill="none">
+                <path d="M450 440L555 285" stroke="#ffffff" stroke-width="82" stroke-linecap="round"/>
+                <path d="M555 285L660 440" stroke="#cfe4ff" stroke-width="82" stroke-linecap="round"/>
+                <path d="M660 440L765 285" stroke="#7db2ff" stroke-width="82" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span>20:18</span>
+          </div>
+        </div>
+        <div class="desktop-content">
+          <div class="desktop-copy">
+            <div class="mini-label">MACLEAN FOR MACOS</div>
+            <h3>恰到好处的<br>两个小功能。</h3>
+            <p>不打扰你的工作流，也不试图做所有事情。只把简单的事情做好。</p>
+          </div>
+          <div class="menu-demo">
+            <div class="demo-header">
+              <span class="demo-brand">Maclean<span style="color:#3979ee">✦</span></span>
+              <span class="demo-status">菜单栏工具</span>
+            </div>
+            <div class="demo-section">快捷操作</div>
+            <div class="demo-item active">
+              <div class="demo-icon">◐</div>
+              <div class="demo-info"><strong>显示器休眠</strong><small>仅关闭显示器 · 不锁屏不睡眠</small></div>
+            </div>
+            <div class="demo-item">
+              <div class="demo-icon">✧</div>
+              <div class="demo-info"><strong>清洁模式</strong><small>屏蔽键盘 · 悬停提示框退出</small></div>
+            </div>
+            <div class="demo-footer"><span>Maclean</span><span>简单 · 轻巧 · 专注</span></div>
+          </div>
+        </div>
       </div>
     </div>
+  </section>
+
+  <section class="intro container" id="features">
+    <div class="section-top">
+      <div>
+        <div class="section-kicker">TWO THINGS, DONE WELL</div>
+        <h2 class="section-title">只做两件事，刚刚好。</h2>
+      </div>
+      <p class="section-note">不需要学习成本，也不需要复杂设置。打开菜单栏，选择你此刻需要的功能。</p>
+    </div>
+
+    <div class="features">
+      <article class="feature">
+        <div class="feature-head">
+          <span class="feature-number">01 / DISPLAY</span>
+          <span class="feature-symbol">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M4 5.5h16v11H4zM9 20h6M12 16.5V20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+        <h3>显示器休眠</h3>
+        <p>需要暂时离开，或只是想让显示器安静一会儿？一键关闭显示器，不锁定用户会话，也不让整台 Mac 进入睡眠。</p>
+        <div class="feature-visual">
+          <div class="sleep-visual"><span class="sleep-glow"></span></div>
+        </div>
+      </article>
+
+      <article class="feature">
+        <div class="feature-head">
+          <span class="feature-number">02 / CLEAN</span>
+          <span class="feature-symbol">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 3l1.7 6.3L20 11l-6.3 1.7L12 19l-1.7-6.3L4 11l6.3-1.7L12 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+            </svg>
+          </span>
+        </div>
+        <h3>清洁模式</h3>
+        <p>清洁屏幕或键盘时，让显示内容暂时退场。全屏黑色覆盖并屏蔽键盘，防止误触；悬停屏幕中央提示框 1.5 秒即可退出。</p>
+        <div class="feature-visual">
+          <div class="clean-visual">
+            <div class="clean-ring"><span>🖱️</span></div>
+            <div class="clean-caption">悬停 1.5 秒即可退出</div>
+            <div class="clean-lock">🔒 已禁用键盘</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section class="philosophy" id="philosophy">
+    <div class="container philosophy-inner">
+      <div>
+        <div class="section-kicker">OUR PHILOSOPHY</div>
+        <h2>好的工具，<br>不应该成为<br><span>新的负担。</span></h2>
+        <p>Maclean 不追求功能数量。我们更在意每一次操作是否足够直接，每一个细节是否符合 macOS 的使用习惯。</p>
+      </div>
+      <div class="principles">
+        <div class="principle"><strong>轻量简单</strong><span>不需要复杂配置</span></div>
+        <div class="principle"><strong>原生体验</strong><span>围绕 macOS 使用习惯设计</span></div>
+        <div class="principle"><strong>没有打扰</strong><span>不做广告，不做账号体系</span></div>
+        <div class="principle"><strong>免费开源</strong><span>MIT 协议，源码公开</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="price-section container" id="download">
+    <div class="section-kicker">FREE &amp; OPEN SOURCE</div>
+    <h2>免费，开源，就这么简单。</h2>
+    <p>MIT 协议。源码公开，无广告、无订阅、无账号，想核对实现直接看代码。</p>
+
+    <div class="dl-grid">
+      <div class="dl-card">
+        <div class="price-label">MACLEAN FOR MACOS · V1.0</div>
+        <div class="price">免费 <small>/ MIT 开源</small></div>
+        <div class="price-sub">适用于 macOS 14 及以上版本 · Apple Silicon</div>
+        <div class="price-divider"></div>
+        <ul class="price-list">
+          <li><span class="check">✓</span> 显示器休眠与清洁模式，完整功能</li>
+          <li><span class="check">✓</span> 无广告、无订阅、无需注册账号</li>
+          <li><span class="check">✓</span> 源码公开（MIT），可自行构建</li>
+        </ul>
+        <a class="dl-btn" href="https://github.com/EathonEvans/maclean/releases" target="_blank">前往 GitHub Releases 下载</a>
+        <div class="price-foot">未做公证，首次打开请右键 → 打开 · 建议安装到 /Applications</div>
+      </div>
+
+      <div class="dl-card donate-card">
+        <div class="price-label">SUPPORT THE DEVELOPER</div>
+        <h3 style="font-size:22px;letter-spacing:-.6px;margin:12px 0 8px;">请作者喝杯咖啡 ☕</h3>
+        <p style="color:#858991;font-size:12px;line-height:1.9;margin:0 0 18px;">Maclean 完全免费。如果它帮你省了时间，欢迎请作者喝杯咖啡，或到 GitHub 点一个 Star。</p>
+        <div class="qr-row">
+          <figure class="qr-item">
+            <img src="assets/donate-wechat.png" alt="微信收款码">
+            <figcaption>微信</figcaption>
+          </figure>
+          <figure class="qr-item">
+            <img src="assets/donate-alipay.png" alt="支付宝收款码">
+            <figcaption>支付宝</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="logo">
+        <svg viewBox="395 150 425 345" fill="none">
+          <defs>
+            <linearGradient id="footL1" x1="430" y1="360" x2="550" y2="500" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#fff"/><stop offset="1" stop-color="#C7D8F4"/>
+            </linearGradient>
+            <linearGradient id="footL2" x1="535" y1="350" x2="660" y2="510" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#9AD8FF"/><stop offset="1" stop-color="#438DFF"/>
+            </linearGradient>
+            <linearGradient id="footL3" x1="650" y1="355" x2="770" y2="510" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#347FFF"/><stop offset="1" stop-color="#1552E8"/>
+            </linearGradient>
+          </defs>
+          <path d="M450 440L555 285" stroke="url(#footL1)" stroke-width="82" stroke-linecap="round"/>
+          <path d="M555 285L660 440" stroke="url(#footL2)" stroke-width="82" stroke-linecap="round"/>
+          <path d="M660 440L765 285" stroke="url(#footL3)" stroke-width="82" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>Maclean<span class="brand-star">✦</span></span>
+    </div>
+    <div class="footer-note">少一点打扰，多一点从容。 · <a href="https://github.com/EathonEvans/maclean" style="color:#888d96">GitHub</a> · MIT License</div>
+    <div class="copyright">© <span id="year"></span> EathonEvans</div>
   </div>
+</footer>
 
-  <div class="build">
-    <h3>从源码构建</h3>
-    <pre>git clone https://github.com/EathonEvans/maclean.git
-cd maclean
-make assets   # 生成图标资源
-make build    # 编译
-make test     # 单元测试
-make package  # DMG + PKG 安装包</pre>
-    <p style="color:var(--text-dim);font-size:13px;margin-top:12px;">依赖：macOS 14+ · Xcode · xcodegen。清洁模式需要「辅助功能」权限。</p>
-  </div>
-
-  <footer>
-    MIT License © 2026 EathonEvans ·
-    <a href="https://github.com/EathonEvans/maclean">GitHub</a> ·
-    <a href="https://eathonevans.github.io/maclean/">Maclean</a>
-  </footer>
-
-</div>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>

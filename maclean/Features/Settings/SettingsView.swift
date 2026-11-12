@@ -70,8 +70,8 @@ struct SettingsView: View {
     private var aboutTab: some View {
         Form {
             LabeledContent("版本", value: Self.versionText)
-            LabeledContent("隐私", value: "不记录键盘内容、不保存鼠标轨迹、无账号、无云端")
-            LabeledContent("商业模式", value: "一次性买断，无订阅、无广告")
+            LabeledContent("隐私", value: "不记录键盘内容、不上传任何数据、无账号、无云端")
+            LabeledContent("开源协议", value: "MIT · 免费使用")
         }
         .padding(20)
     }
