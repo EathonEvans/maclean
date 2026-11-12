@@ -1,0 +1,9 @@
+# Xcode 工程由 xcodegen 生成，不纳入版本管理
+maclean.xcodeproj/
+
+# 构建产物
+.derived/
+build/
+
+# 系统
+.DS_Store
