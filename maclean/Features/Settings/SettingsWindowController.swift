@@ -23,7 +23,7 @@ final class SettingsWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "maclean 设置"
+        window.title = "Maclean 设置"
         window.isReleasedWhenClosed = false
         window.contentView = NSHostingView(rootView: SettingsView())
         window.center()

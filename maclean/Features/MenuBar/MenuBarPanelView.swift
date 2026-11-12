@@ -43,7 +43,7 @@ struct MenuBarPanelView: View {
                 .renderingMode(.template)
                 .frame(width: 18, height: 18)
                 .foregroundStyle(accent)
-            Text("maclean")
+            Text("Maclean")
                 .font(.system(size: 14, weight: .semibold))
             Spacer(minLength: 0)
         }

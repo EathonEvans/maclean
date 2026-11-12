@@ -27,7 +27,7 @@ enum MacleanError: LocalizedError {
         case .accessibilityPermissionNeeded:
             // 文档 §4.7：过滤初始化失败时，不能让用户误以为键盘已被锁定。
             // 附注旧签名残留条目的处理方法（列表显示已开启但实际不生效的典型场景）。
-            return "屏蔽键盘输入需要「辅助功能」权限。请在 系统设置 > 隐私与安全性 > 辅助功能 中允许 maclean。\n若列表中 maclean 已显示开启但仍提示此消息，请先选中它按「−」移除，然后重新点击「清洁」并重新允许。"
+            return "屏蔽键盘输入需要「辅助功能」权限。请在 系统设置 > 隐私与安全性 > 辅助功能 中允许 Maclean。\n若列表中 Maclean 已显示开启但仍提示此消息，请先选中它按「−」移除，然后重新点击「清洁」并重新允许。"
         case .eventTapCreationFailed(let detail):
             return "键盘过滤初始化失败，已取消进入清洁模式，键盘未被屏蔽。(\(detail))"
         case .windowCreationFailed(let detail):

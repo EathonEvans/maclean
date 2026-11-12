@@ -26,7 +26,7 @@ struct SettingsView: View {
 
     private var generalTab: some View {
         Form {
-            Toggle("开机自启（登录时启动 maclean）", isOn: $settings.launchAtLogin)
+            Toggle("开机自启（登录时启动 Maclean）", isOn: $settings.launchAtLogin)
 
             if let error = settings.loginItemError {
                 Text("登录启动设置失败：\(error)")
@@ -34,7 +34,7 @@ struct SettingsView: View {
                     .foregroundStyle(.red)
             }
 
-            Text("清洁模式涉及全局键盘过滤，maclean 不记录键盘内容和鼠标轨迹。")
+            Text("清洁模式涉及全局键盘过滤，Maclean 不记录键盘内容和鼠标轨迹。")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }

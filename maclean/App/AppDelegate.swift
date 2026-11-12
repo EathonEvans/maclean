@@ -24,7 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 AlertPresenter.show(error)
             }
         }
-        Log.app.notice("maclean 已启动（bundleID: \(AppConstants.bundleIdentifier, privacy: .public)）")
+        Log.app.notice("Maclean 已启动（bundleID: \(AppConstants.bundleIdentifier, privacy: .public)）")
         startSelfTestIfNeeded()
     }
 

@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/assets/icon.png" width="120" alt="maclean 应用图标"/>
+<img src="docs/assets/icon.png" width="120" alt="Maclean 应用图标"/>
 
-# maclean
+# Maclean
 
 **极简 macOS 菜单栏工具：一键显示器休眠 · 清洁模式**
 
@@ -51,7 +51,7 @@ make run      # 构建并启动
 make package  # 生成 dist/ 下的 DMG 与 PKG 安装包
 ```
 
-首次运行：**系统设置 → 隐私与安全性 → 辅助功能 → 允许 maclean**（清洁模式屏蔽键盘需要，息屏不需要）。
+首次运行：**系统设置 → 隐私与安全性 → 辅助功能 → 允许 Maclean**（清洁模式屏蔽键盘需要，息屏不需要）。
 
 ## 安装
 
@@ -93,7 +93,7 @@ SwiftUI（菜单面板/设置/HUD）+ AppKit（全屏窗口/状态项）+ CoreGr
 
 ## 支持开发者
 
-maclean 完全免费开源。如果它帮你省了时间，欢迎请作者喝杯咖啡 ☕
+Maclean 完全免费开源。如果它帮你省了时间，欢迎请作者喝杯咖啡 ☕
 
 <p align="center">
   <img src="docs/assets/donate-wechat.png" width="220" alt="微信赞赏码"/>

@@ -29,7 +29,8 @@ targets:
     info:
       path: maclean/Info.plist
       properties:
-        CFBundleDisplayName: maclean
+        CFBundleDisplayName: Maclean
+        CFBundleName: Maclean
         CFBundleIconFile: AppIcon
         LSUIElement: true
         LSApplicationCategoryType: public.app-category.utilities
