@@ -10,6 +10,8 @@ import Foundation
 ///   与系统快捷键处理之前拦截事件。此前挂在 session 层，擦键盘的事件洪流冲垮 tap
 ///   以及系统保留快捷键路径的泄漏，导致清洁中触发锁屏。HID 层 = 真正的"死键盘"
 ///   （与 KeyboardCleanTool 等键盘清洁工具同款机制）。
+/// - 掩码额外包含 NX_SYSDEFINED（raw 14）：功能键行的亮度/音量/媒体键以系统定义
+///   事件形式经 HID 层派发，一并吞掉（2026-11-12 漏键修复）。
 /// - tap 在**专用线程**上创建并运行（Apple 推荐模式），start() 只让主线程
 ///   **有界等待**（默认 2 秒）；超时即回调失败、主线程立即回滚，绝不卡死界面。
 /// - tap 生命周期回调（鼠标移动、失效通知）从 tap 线程转发到主线程执行。
@@ -185,12 +187,15 @@ final class KeyboardEventMonitor {
                 | (1 << CGEventType.rightMouseDragged.rawValue)
                 | (1 << CGEventType.otherMouseDragged.rawValue)
         )
+        // NX_SYSDEFINED（raw 14）：功能键行的系统功能键（亮度/音量/媒体）以此形式
+        // 经 HID 层派发。不加入掩码的话这些键会绕过 tap 直接被系统消费（2026-11-12 漏键修复）
+        let sysDefinedMask = CGEventMask(1 << 14)
 
         guard let tap = CGEvent.tapCreate(
             tap: .cghidEventTap,
             place: .headInsertEventTap,
             options: .defaultTap,
-            eventsOfInterest: keyMask | mouseMask,
+            eventsOfInterest: keyMask | mouseMask | sysDefinedMask,
             callback: Self.callback,
             userInfo: Unmanaged.passUnretained(self).toOpaque()
         ) else {
@@ -275,6 +280,12 @@ final class KeyboardEventMonitor {
             return Unmanaged.passUnretained(event)
 
         default:
+            // NX_SYSDEFINED（type 14）：功能键行的系统功能键（亮度/音量/媒体）。
+            // 吞掉 = 功能键行死键（用户 2026-11-12 要求全屏蔽），事件本身放行与否无关紧要
+            if type.rawValue == 14 {
+                return nil
+            }
+            // mouseMoved / *_mouseDragged：节流后转发主线程，事件本身放行
             // mouseMoved / *_mouseDragged：节流后转发主线程，事件本身放行
             let now = DispatchTime.now()
             let elapsed = now.uptimeNanoseconds > monitor.lastForwardAt.uptimeNanoseconds

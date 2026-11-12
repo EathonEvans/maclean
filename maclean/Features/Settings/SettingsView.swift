@@ -60,7 +60,7 @@ struct SettingsView: View {
 
             LabeledContent("退出热区位置", value: "屏幕中央提示框（固定）")
             LabeledContent("多显示器", value: "全部支持（固定）")
-            LabeledContent("键盘", value: "主键盘区全屏蔽（音量/亮度等功能键行除外）")
+            LabeledContent("键盘", value: "清洁期间全屏蔽（含功能键行，仅 Touch ID 硬件键除外）")
         }
         .padding(20)
     }
