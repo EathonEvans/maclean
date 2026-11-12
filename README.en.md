@@ -15,7 +15,7 @@ A macOS menu bar utility with two features: display sleep and cleaning mode.
 [![License: MIT](https://img.shields.io/badge/license-MIT-2563EB?style=flat-square)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/EathonEvans/maclean?label=release&style=flat-square)](https://github.com/EathonEvans/maclean/releases)
 
-[Download](https://github.com/EathonEvans/maclean/releases) · [Website](https://eathonevans.github.io/maclean/) · [Issues](https://github.com/EathonEvans/maclean/issues)
+[Download](https://github.com/EathonEvans/maclean/releases) · [Website](https://maclean.ethon-link.work) · [Issues](https://github.com/EathonEvans/maclean/issues)
 
 </div>
 

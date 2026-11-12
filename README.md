@@ -15,7 +15,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-2563EB?style=flat-square)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/EathonEvans/maclean?label=release&style=flat-square)](https://github.com/EathonEvans/maclean/releases)
 
-[下载](https://github.com/EathonEvans/maclean/releases) · [产品主页](https://eathonevans.github.io/maclean/) · [问题反馈](https://github.com/EathonEvans/maclean/issues)
+[下载](https://github.com/EathonEvans/maclean/releases) · [产品主页](https://maclean.ethon-link.work) · [问题反馈](https://github.com/EathonEvans/maclean/issues)
 
 </div>
 
