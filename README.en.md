@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="docs/assets/icon-256.png" width="112" alt="Maclean app icon"/>
+<img src="assets/icon-256.png" width="112" alt="Maclean app icon"/>
 
 # Maclean
 
@@ -99,9 +99,9 @@ The current implementation involves keyboard input interception and display cont
 Maclean is free and open source. If you find it helpful, you can buy the author a coffee or star the repo on GitHub.
 
 <p align="center">
-  <img src="docs/assets/donate-wechat.png" width="200" alt="WeChat QR code"/>
+  <img src="assets/donate-wechat.png" width="200" alt="WeChat QR code"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/assets/donate-alipay.png" width="200" alt="Alipay QR code"/>
+  <img src="assets/donate-alipay.png" width="200" alt="Alipay QR code"/>
 </p>
 <p align="center"><sub>WeChat (left) · Alipay (right)</sub></p>
 

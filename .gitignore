@@ -10,3 +10,7 @@ build/
 
 # 打包产物（成品经 GitHub Release 分发）
 dist/
+
+# 产品页与测试（页面部署于自有服务器，测试仅本地保留）
+docs/
+Tests/

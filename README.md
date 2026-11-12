@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="docs/assets/icon-256.png" width="112" alt="Maclean 应用图标"/>
+<img src="assets/icon-256.png" width="112" alt="Maclean 应用图标"/>
 
 # Maclean
 
@@ -97,9 +97,9 @@ Maclean 不联网、不要求登录，也不包含统计或广告。
 Maclean 免费开源。如果它对你有帮助，欢迎请作者喝杯咖啡，或在 GitHub 点个 Star。
 
 <p align="center">
-  <img src="docs/assets/donate-wechat.png" width="200" alt="微信赞赏码"/>
+  <img src="assets/donate-wechat.png" width="200" alt="微信赞赏码"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="docs/assets/donate-alipay.png" width="200" alt="支付宝收款码"/>
+  <img src="assets/donate-alipay.png" width="200" alt="支付宝收款码"/>
 </p>
 <p align="center"><sub>微信（左） · 支付宝（右）</sub></p>
 
