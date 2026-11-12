@@ -5,17 +5,20 @@ import Foundation
 
 /// 全局输入过滤与监听服务（文档 §4.7）。
 ///
-/// 架构（2026-11-11 事故修复）：
-/// - tap 在**专用线程**上创建并运行（Apple 推荐模式）。此前把 tap 创建同步放在主线程，
-///   在刚授权后第一次创建时与 WindowServer 发生死锁，主线程冻结导致清洁模式无法退出。
-/// - start() 由主线程调用，但内部只**有界等待**（默认 2 秒）；超时即回调失败、主线程
-///   立即回滚——最坏情况是用户看到一条错误提示，绝不会再卡死界面。
-/// - tap 生命周期回调（紧急退出、鼠标移动、失效通知）从 tap 线程转发到主线程执行。
+/// 架构：
+/// - tap 挂载在 **HID 硬件层**（kCGHIDEventTap，2026-11-12 修正）：在窗口服务器分发
+///   与系统快捷键处理之前拦截事件。此前挂在 session 层，擦键盘的事件洪流冲垮 tap
+///   以及系统保留快捷键路径的泄漏，导致清洁中触发锁屏。HID 层 = 真正的"死键盘"
+///   （与 KeyboardCleanTool 等键盘清洁工具同款机制）。
+/// - tap 在**专用线程**上创建并运行（Apple 推荐模式），start() 只让主线程
+///   **有界等待**（默认 2 秒）；超时即回调失败、主线程立即回滚，绝不卡死界面。
+/// - tap 生命周期回调（鼠标移动、失效通知）从 tap 线程转发到主线程执行。
 ///
 /// 安全机制（文档 §5.4）：
 /// - 创建前检查辅助功能授权，未授权回调失败，绝不让用户误以为键盘已被屏蔽；
 /// - tap 被系统禁用时自动重启用，持续失效通知上层安全退出；
 /// - 无快捷键逃生通道（用户 2026-11-12 决策）：键盘事件一律吞掉。
+/// - 硬件按键（Touch ID/电源键锁屏）不经事件系统，无法屏蔽——能力边界如实告知。
 final class KeyboardEventMonitor {
     enum StartOutcome {
         case success
@@ -184,7 +187,7 @@ final class KeyboardEventMonitor {
         )
 
         guard let tap = CGEvent.tapCreate(
-            tap: .cgSessionEventTap,
+            tap: .cghidEventTap,
             place: .headInsertEventTap,
             options: .defaultTap,
             eventsOfInterest: keyMask | mouseMask,
@@ -206,7 +209,7 @@ final class KeyboardEventMonitor {
         self.activeFlag = true
         stateLock.unlock()
 
-        Log.input.notice("输入过滤 tap 已创建并启用（专用线程）")
+        Log.input.notice("输入过滤 tap 已创建并启用（HID 硬件层 · 专用线程）")
         return (.success, tap, source, runLoop)
     }
 
