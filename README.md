@@ -35,9 +35,18 @@
 
 ## 安装
 
-从 [Releases](https://github.com/EathonEvans/maclean/releases) 下载 DMG 或 PKG，安装到 `/Applications`。要求 macOS 14 或更高版本，支持 Intel 和 Apple Silicon。
+从 [Releases](https://github.com/EathonEvans/maclean/releases) 下载 DMG 或 PKG，安装到 `/Applications`。要求 macOS 14 或更高版本，支持 Apple Silicon。
 
-应用尚未经过 Apple 签名和公证，首次打开时可能被 Gatekeeper 拦截：
+### Homebrew 安装（推荐，装完自动移除隔离标记）
+
+```bash
+brew tap EathonEvans/maclean
+brew install --cask maclean
+```
+
+首次添加 tap 需执行一次 `brew trust --cask eathonevans/maclean/maclean`（Homebrew 对第三方 tap 的安全确认）。此方式安装后首次打开无 Gatekeeper 拦截。
+
+应用尚未经过 Apple 签名和公证，手动下载的副本首次打开时可能被 Gatekeeper 拦截：
 
 - **macOS 15 及以上**：打开 Maclean 后，在「系统设置 → 隐私与安全性」中选择「仍要打开」。
 - **macOS 14**：右键点击 Maclean，选择「打开」，再确认打开。
